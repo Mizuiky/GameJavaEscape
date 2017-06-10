@@ -1,6 +1,7 @@
 import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.image.*;
+import java.util.ArrayList;
 
 
 public class Tela extends JPanel implements Runnable{
@@ -13,6 +14,8 @@ public class Tela extends JPanel implements Runnable{
 
     private BufferedImage img;
     private Graphics2D g;
+
+    public static ArrayList<Enemy> enemies;
 
     public Tela(){
         super();
@@ -34,6 +37,12 @@ public class Tela extends JPanel implements Runnable{
         rodando = true;
         img = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
         g = (Graphics2D) img.getGraphics();
+
+        enemies = new ArrayList<Enemy>();
+        for(int i=0;i<=3;i++){
+            enemies.add(new Enemy(1,1));
+        }
+
         while(rodando){
             gameUpdate();
             gameRender();
@@ -44,6 +53,10 @@ public class Tela extends JPanel implements Runnable{
 
     private void gameUpdate(){  //atualização do player dos inimigos etc
 
+        //update enemies
+        for(int i=0;i<enemies.size();i++){
+            enemies.get(i).update();
+        }
 
     }
 
@@ -52,6 +65,11 @@ public class Tela extends JPanel implements Runnable{
         g.fillRect(0,0,width,height);
         g.setColor(Color.BLACK);
         //g.drawString("TEST STRING",100,100);
+
+        //enemies
+        for(int i=0;i<enemies.size();i++){
+            enemies.get(i).draw(g);
+        }
 
     }
     private void gameDraw(){

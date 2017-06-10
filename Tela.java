@@ -25,7 +25,7 @@ public class Tela extends JPanel implements Runnable{
     public void addNotify(){  //faz com que o JPanel seja visivel
         super.addNotify();
         if(thread == null){
-            thread = new thread(this);
+            thread = new Thread(this);
             thread.start();
         }
     }
@@ -47,11 +47,11 @@ public class Tela extends JPanel implements Runnable{
 
     }
 
-    private void gameRender(){
+    private void gameRender(){    
         g.setColor(Color.yellow);
         g.fillRect(0,0,width,height);
         g.setColor(Color.BLACK);
-        g.drawString("TEST STRING",100,100);
+        //g.drawString("TEST STRING",100,100);
 
     }
     private void gameDraw(){

@@ -21,17 +21,25 @@ public class Enemy{
     private boolean ready; //se o inimigo esta na tela
     //private boolean death;
 
-    public Enemy(int type,int rank){
-        this.type = type;
+    public Enemy(int rank){
         this.rank = rank;
 
         //deafault enemy
-        if(type ==1){
+        if(rank ==1){
             color1 = Color.green;
-            if(rank == 1){
-                speed = 1; //speed pequeno (começo)
-                r = 7;
-            }
+            speed = 3; //speed pequeno (começo)
+            r = 6;
+            
+        }
+        else if(rank == 2){
+            color1 = Color.blue;
+            speed = 3; //speed pequeno (começo)
+            r = 7;
+        }
+         else if(rank == 3){
+            color1 = Color.yellow;
+            speed = 4; //speed pequeno (começo)
+            r = 8;
         }
 
         x = Math.random() * Tela.width/2 + Tela.width / 4;

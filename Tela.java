@@ -15,6 +15,7 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 
     private Thread thread;
     private boolean rodando; //irá dizer se o jogo esta rodando
+	private boolean fim;
 
     private BufferedImage img;
     private Graphics2D g;
@@ -22,6 +23,13 @@ public class Tela extends JPanel implements Runnable, KeyListener{
     private Player player;
 
     public static ArrayList<Enemy> enemies;
+
+	private long waveStartTimer;
+	private long waveStartTimerDiff;  //para dizer quanto tempo se passou
+	private int waveNumber;
+	private boolean waveStart;
+	private int waveDelay = 2000; //dois segundos
+
 
     public Tela(){
         super();
@@ -44,15 +52,23 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 
     public void run(){
         rodando = true;
+		fim = false;
         img = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
         g = (Graphics2D) img.getGraphics();
-
+		
         player = new Player();
-        
         enemies = new ArrayList<Enemy>();
-        for(int i=0;i<=5;i++){
-            enemies.add(new Enemy(1,1));
-        }
+        
+		waveStartTimer = 20000;
+		waveStartTimerDiff = 0;
+		waveStart = true;
+		waveNumber = 0;
+
+		if(waveNumber==4){
+			waveStart = false;
+			waveStartTimer = 0;
+			fim = true;
+		} 
 
 
         while(rodando){
@@ -60,7 +76,8 @@ public class Tela extends JPanel implements Runnable, KeyListener{
             gameRender();
             gameDraw();
         }
-		
+
+		if(waveStart==false && waveNumber<=3){
 		g.setColor(new Color(153, 50, 204));
 		g.fillRect(0, 0, width, height);
 		g.setColor(Color.black);
@@ -69,11 +86,36 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 		int length = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
 		g.drawString(s, width / 2, height / 2);
 		gameDraw();
+	   }
+
+	
     }
     
 	
 	
     private void gameUpdate(){  //atualização do player dos inimigos etc
+
+		//nova wave
+		if(waveStartTimer == 0 && waveStart==true){
+			waveNumber++;
+			waveStart = false;
+			waveStartTimer = System.nanoTime();
+		}
+		
+		else{
+			waveStartTimerDiff = (System.nanoTime()- waveStartTimer) / 1000000;
+			if(waveStartTimerDiff > waveDelay){
+				waveStart = true;
+				waveStartTimer = 0;
+				waveStartTimerDiff = 0;
+
+			}
+		}
+
+		//criando inimigos
+		if(waveStart){
+			createNewEnemies();
+		}
 
 		player.update();
 
@@ -109,18 +151,45 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 		}
 	
 
-    private void gameRender(){    
+    private void gameRender(){  //irá desenhar, setar cores, background etc no jogo  
         
-        //g.setColor(new Color(0, 255, 127));
+		//desenha a tela de fundo
         g.fillRect(0,0,width,height);
         g.setColor(Color.BLACK);
         g.drawImage(fundo, 0, 0, null);//imagem estatica
-        player.draw(g);
+       
+	   //desenha player
+	    player.draw(g);
 
-        //enemies
+        //desenha enemies
         for(int i=0;i<enemies.size();i++){
             enemies.get(i).draw(g);
         }
+
+		//desenha o numero da wave
+		if(waveStartTimer !=0){
+			g.setFont(new Font("Century Gothic",Font.PLAIN,18));
+			String s = "** W A V E "+ waveNumber + "**";
+			int length = (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
+			//setando a transparencia
+			int alpha = (int) (255 * Math.sin(3.14 * waveStartTimerDiff / waveDelay)); 
+			if(alpha > 255) alpha = 255;
+			g.setColor(new Color(255,255,255,alpha));
+			g.drawString(s,width/2 - length /2,height/2);
+		}
+
+		else if(waveStart == false && fim==true){
+		   rodando = false;	
+		   g.setColor(new Color(153, 255, 204));
+		   g.fillRect(0, 0, width, height);
+		   g.setColor(Color.black);
+		   g.setFont(new Font("Century Gothic", Font.BOLD, 36));
+		   String s = "** Parabens Voce Completou o jogo**";
+		   int length = (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
+		   g.drawString(s, width/3, height/3);
+		   gameDraw();
+		   
+	   }
 
 
     }
@@ -129,6 +198,34 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         g2.drawImage(img,0,0,null);
         g2.dispose();
     }
+
+	private void createNewEnemies(){
+		enemies.clear();
+		Enemy e;
+
+			if(waveNumber == 1){
+				for(int i = 0; i < 3;i++){
+					enemies.add(new Enemy(1));
+
+				}
+			}
+			if(waveNumber == 2){
+				for(int i = 0; i < 5;i++){
+					enemies.add(new Enemy(2));
+
+				}
+			}
+			if(waveNumber == 3){
+				for(int i = 0; i < 6;i++){
+					enemies.add(new Enemy(3));
+				}
+			}
+
+			if(waveNumber==4){
+						waveStart=false;
+						fim=true;	
+			}
+	}
 
 	public void keyTyped(KeyEvent key) {}
 	public void keyPressed(KeyEvent key) {

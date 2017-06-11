@@ -27,10 +27,10 @@ public class Enemy{
 
         //deafault enemy
         if(type ==1){
-            color1 = Color.BLUE;
+            color1 = Color.green;
             if(rank == 1){
-                speed = 0.2; //speed pequeno (começo)
-                r = 5;
+                speed = 1; //speed pequeno (começo)
+                r = 7;
             }
         }
 

@@ -5,13 +5,13 @@ import java.awt.image.*;
 import java.awt.event.*;
 
 import java.util.ArrayList;
-
+import javax.swing.ImageIcon;
 
 
 public class Tela extends JPanel implements Runnable, KeyListener{
-
-    public static int width = 500;
-    public static int height = 500;
+	private Image fundo;
+    public static int width = 1066;
+    public static int height = 600;
 
     private Thread thread;
     private boolean rodando; //irá dizer se o jogo esta rodando
@@ -28,6 +28,8 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         requestFocus();
+        ImageIcon referencia = new ImageIcon("universo.png");
+		fundo = referencia.getImage();
       
     }
 
@@ -48,7 +50,7 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         player = new Player();
         
         enemies = new ArrayList<Enemy>();
-        for(int i=0;i<=3;i++){
+        for(int i=0;i<=5;i++){
             enemies.add(new Enemy(1,1));
         }
 
@@ -58,8 +60,17 @@ public class Tela extends JPanel implements Runnable, KeyListener{
             gameRender();
             gameDraw();
         }
-
+		
+		g.setColor(new Color(153, 50, 204));
+		g.fillRect(0, 0, width, height);
+		g.setColor(Color.black);
+		g.setFont(new Font("Century Gothic", Font.BOLD, 46));
+		String s = "G A M E   O V E R";
+		int length = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
+		g.drawString(s, width / 2, height / 2);
+		gameDraw();
     }
+    
 	
 	
     private void gameUpdate(){  //atualização do player dos inimigos etc
@@ -70,14 +81,40 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         for(int i=0;i<enemies.size();i++){
             enemies.get(i).update();
         }
-
-    }
+		
+		if(player.isDead()) {
+			rodando = false;
+		}
+		//colisao
+		
+		    int px = player.getx();
+			int py = player.gety();
+			int pr = player.getr();
+		for(int i = 0; i < enemies.size(); i++) {
+				Enemy e = enemies.get(i);
+				double ex = e.getx();
+				double ey = e.gety();
+				double er = e.getr();
+				
+				double dx = px - ex;
+				double dy = py - ey;
+				double dist = Math.sqrt(dx * dx + dy * dy);
+				
+				if(dist < pr + er) {
+					player.Life();
+					
+				}//fecha if
+		
+			}//fecha for
+		}
+	
 
     private void gameRender(){    
-        g.setColor(Color.yellow);
+        
+        //g.setColor(new Color(0, 255, 127));
         g.fillRect(0,0,width,height);
         g.setColor(Color.BLACK);
-        
+        g.drawImage(fundo, 0, 0, null);//imagem estatica
         player.draw(g);
 
         //enemies
@@ -93,37 +130,39 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         g2.dispose();
     }
 
-	public void keyTyped (KeyEvent key) {}
-	public void keyPressed (KeyEvent key) {
+	public void keyTyped(KeyEvent key) {}
+	public void keyPressed(KeyEvent key) {
 		int keyCode = key.getKeyCode();
-		if(keyCode == KeyEvent.VK_LEFT){
+		if(keyCode == KeyEvent.VK_LEFT) {
 			player.setLeft(true);
-			}
-		if(keyCode == KeyEvent.VK_LEFT){
-			player.setRight(true);
-			}
-		if(keyCode == KeyEvent.VK_LEFT){
-			player.setUp(true);
-			}
-		if(keyCode == KeyEvent.VK_LEFT){
-			player.setDown(true);
-			}			
-			
 		}
-	public void keyReleased (KeyEvent key) {
+		if(keyCode == KeyEvent.VK_RIGHT) {
+			player.setRight(true);
+		}
+		if(keyCode == KeyEvent.VK_UP) {
+			player.setUp(true);
+		}
+		if(keyCode == KeyEvent.VK_DOWN) {
+			player.setDown(true);
+		}
+		
+	}
+	public void keyReleased(KeyEvent key) {
 		int keyCode = key.getKeyCode();
-		if(keyCode == KeyEvent.VK_LEFT){
+		if(keyCode == KeyEvent.VK_LEFT) {
 			player.setLeft(false);
-			}
-		if(keyCode == KeyEvent.VK_LEFT){
+		}
+		if(keyCode == KeyEvent.VK_RIGHT) {
 			player.setRight(false);
-			}
-		if(keyCode == KeyEvent.VK_LEFT){
+		}
+		if(keyCode == KeyEvent.VK_UP) {
 			player.setUp(false);
-			}
-		if(keyCode == KeyEvent.VK_LEFT){
+		}
+		if(keyCode == KeyEvent.VK_DOWN) {
 			player.setDown(false);
-			}			
+		}
+		
+		
 		}
 	
 }

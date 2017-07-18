@@ -8,10 +8,11 @@ import java.net.UnknownHostException;
 
 
 public class Cliente extends Thread{
+	
 	private Player player;
 
-    public static ArrayList<Enemy> enemies;
-    
+	private Tela tela;
+	
 	private static Socket socket;
 
 	private static ObjectOutputStream objectOutPS;
@@ -71,16 +72,11 @@ public class Cliente extends Thread{
 		}
 	}
 
-	public static void enviarInimigo(){
-		Enemy inimigoEnviar = Main.enemy;
-		System.out.println("---------------------------------------------------------------------");
-		System.out.println("INIMIGO ENVIAR");
-		System.out.println("X :"+inimigoEnviar.getX());
-		System.out.println("Y :"+inimigoEnviar.getY());
-		System.out.println("HP :" +inimigoEnviar.getHp());
-		System.out.println("---------------------------------------------------------------------"+"\n\n");
+	public static void enviarAdversario(){
+		Player q = new Player();
+		
 		try {
-			objectOutPS.writeObject(inimigoEnviar);
+			objectOutPS.writeObject(q);
 			objectOutPS.flush();
 			objectOutPS.reset();
 

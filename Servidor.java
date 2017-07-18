@@ -9,10 +9,9 @@ import javax.swing.JOptionPane;
 
 
 public class Servidor extends Thread{
+	
 	private Player player;
 
-    public static ArrayList<Enemy> enemies;
-	
 	private static ServerSocket serverSocket;
 
 	private static Socket socket;

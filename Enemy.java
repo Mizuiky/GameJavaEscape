@@ -27,18 +27,18 @@ public class Enemy{
         //deafault enemy
         if(rank ==1){
             color1 = Color.green;
-            speed = 3; //speed pequeno (começo)
-            r = 6;
+            speed = 7; //speed pequeno (começo)
+            r = 7;
             
         }
         else if(rank == 2){
             color1 = Color.blue;
-            speed = 3; //speed pequeno (começo)
-            r = 7;
+            speed = 8; //speed pequeno (começo)
+            r = 8;
         }
          else if(rank == 3){
             color1 = Color.yellow;
-            speed = 4; //speed pequeno (começo)
+            speed = 9; //speed pequeno (começo)
             r = 8;
         }
 

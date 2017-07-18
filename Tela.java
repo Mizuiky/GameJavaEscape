@@ -28,7 +28,7 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 	private long waveStartTimerDiff;  //para dizer quanto tempo se passou
 	private int waveNumber;
 	private boolean waveStart;
-	private int waveDelay = 2000; //dois segundos
+	private int waveDelay = 10000; //30 segundos para criar uma wave 
 
 
     public Tela(){
@@ -41,7 +41,7 @@ public class Tela extends JPanel implements Runnable, KeyListener{
       
     }
 
-    public void addNotify(){  //faz com que o JPanel seja visivel
+    public void addNotify(){ 
         super.addNotify();
         if(thread == null){
             thread = new Thread(this);
@@ -59,16 +59,10 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         player = new Player();
         enemies = new ArrayList<Enemy>();
         
-		waveStartTimer = 20000;
-		waveStartTimerDiff = 0;
+		waveStartTimer = 1000;
+		waveStartTimerDiff = 1000;
 		waveStart = true;
 		waveNumber = 0;
-
-		if(waveNumber==4){
-			waveStart = false;
-			waveStartTimer = 0;
-			fim = true;
-		} 
 
 
         while(rodando){
@@ -77,7 +71,19 @@ public class Tela extends JPanel implements Runnable, KeyListener{
             gameDraw();
         }
 
-		if(waveNumber<=3){
+		if(rodando==false && fim==true && waveStart==false){
+		   g.setColor(new Color(153, 255, 204));
+		   g.fillRect(0, 0, width, height);
+		   g.setColor(Color.black);
+		   g.setFont(new Font("Century Gothic", Font.BOLD, 36));
+		   String s = "** Parabens Voce Completou o jogo**";
+		   int length = (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
+		   g.drawString(s, width/3, height/3);
+		   gameDraw();
+		   
+	   }
+		
+		else{
 			g.setColor(new Color(153, 50, 204));
 			g.fillRect(0, 0, width, height);
 			g.setColor(Color.black);
@@ -86,7 +92,8 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 			int length = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
 			g.drawString(s, width / 2, height / 2);
 			gameDraw();
-	   }
+		}
+	   
 			
     }
     
@@ -103,6 +110,7 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 		
 		else{
 			waveStartTimerDiff = (System.nanoTime()- waveStartTimer) / 1000000;
+
 			if(waveStartTimerDiff > waveDelay){
 				waveStart = true;
 				waveStartTimer = 0;
@@ -141,13 +149,13 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 				double dy = py - ey;
 				double dist = Math.sqrt(dx * dx + dy * dy);
 				
-		if(dist < pr + er) {
-					player.Life();
-					
-				}//fecha if
+			if(dist < pr + er) {
+				player.Life();
+						
+			}//fecha if
 		
-			}//fecha for
-		}
+		}//fecha for
+	}
 	
 
     private void gameRender(){  //irá desenhar, setar cores, background etc no jogo  
@@ -166,9 +174,10 @@ public class Tela extends JPanel implements Runnable, KeyListener{
         }
 
 		//desenha o numero da wave
-		if(waveStartTimer !=0){
+		if(waveStartTimer !=0 ){
+
 			g.setFont(new Font("Century Gothic",Font.PLAIN,18));
-			String s = "** W A V E "+ waveNumber + "**";
+			String s = "** E S C A P E "+ waveNumber + "**";
 			int length = (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
 			//setando a transparencia
 			int alpha = (int) (255 * Math.sin(3.14 * waveStartTimerDiff / waveDelay)); 
@@ -179,18 +188,7 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 		
 		
 	   
-		else if(waveStart == false && fim==true){
-		   rodando = false;	
-		   g.setColor(new Color(153, 255, 204));
-		   g.fillRect(0, 0, width, height);
-		   g.setColor(Color.black);
-		   g.setFont(new Font("Century Gothic", Font.BOLD, 36));
-		   String s = "** Parabens Voce Completou o jogo**";
-		   int length = (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
-		   g.drawString(s, width/3, height/3);
-		   gameDraw();
 		   
-	   }
 	   
 	   
 
@@ -207,27 +205,29 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 		Enemy e;
 
 			if(waveNumber == 1){
-				for(int i = 0; i < 3;i++){
+				for(int i = 0; i < 6;i++){
 					enemies.add(new Enemy(1));
 
 				}
 			}
 			if(waveNumber == 2){
-				for(int i = 0; i < 5;i++){
+				for(int i = 0; i < 8;i++){
 					enemies.add(new Enemy(2));
 
 				}
 			}
 			if(waveNumber == 3){
-				for(int i = 0; i < 6;i++){
+				for(int i = 0; i < 9;i++){
 					enemies.add(new Enemy(3));
 				}
 			}
 
 			if(waveNumber==4){
-						waveStart=false;
-						fim=true;	
-			}
+				waveStart = false;
+				fim = true;
+				rodando=false;
+			} 
+			
 	}
 
 	public void keyTyped(KeyEvent key) {}
@@ -263,6 +263,6 @@ public class Tela extends JPanel implements Runnable, KeyListener{
 		}
 		
 		
-		}
+	}
 	
 }

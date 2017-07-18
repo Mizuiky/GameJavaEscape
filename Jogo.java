@@ -4,7 +4,7 @@ public class Jogo extends JFrame{
 
     Jogo(){
 
-        super("Wave");
+        super("Escape");
         this.setContentPane(new Tela());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setContentPane(new Tela());

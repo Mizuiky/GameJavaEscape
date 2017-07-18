@@ -13,27 +13,35 @@ public class Enemy{
     private double rad;
     private double speed;  //velocidade da bolinha
 
-    private int rank;
-    private int type;
+    private double type;
+    private double rank;
 
     private Color color1;
 
     private boolean ready; //se o inimigo esta na tela
     //private boolean death;
 
-    public Enemy(int type,int rank){
+    public Enemy(int rank){
         this.rank = rank;
-        this.type = type;
 
         //deafault enemy
-        if(type ==1){
+        if(rank ==1){
             color1 = Color.green;
-            if(rank==1){
-               speed = 4; //speed pequeno (começo)
-               r = 6;
-            }
+            speed = 3; //speed pequeno (começo)
+            r = 6;
+            
         }
-        
+        else if(rank == 2){
+            color1 = Color.blue;
+            speed = 3; //speed pequeno (começo)
+            r = 7;
+        }
+         else if(rank == 3){
+            color1 = Color.yellow;
+            speed = 4; //speed pequeno (começo)
+            r = 8;
+        }
+
         x = Math.random() * Tela.width/2 + Tela.width / 4;
         y = -r;
 
